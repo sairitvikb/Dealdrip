@@ -16,7 +16,7 @@ A simple, reliable web application for tracking e-commerce product prices and se
 ### Prerequisites
 - Python 3.8+
 - Node.js 14+
-- Gmail account (for sending the emails)
+- Gmail account (for sending emails)
 
 ### Installation
 
