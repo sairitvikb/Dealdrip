@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dealdrip - Price Tracking Tool</title>
+    <style>
+        /* Modern CSS Reset and Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #2c3e50;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            backdrop-filter: blur(10px);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .logo {
+            font-size: 2.5rem;
+            font-weight: bold;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+        }
+
+        .tagline {
+            color: #7f8c8d;
+            font-size: 1.1rem;
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2c3e50;
+            font-size: 0.95rem;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="number"],
+        input[type="tel"],
+        select {
+            width: 100%;
+            padding: 15px 20px;
+            border: 2px solid #e1e8ed;
+            border-radius: 12px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+        }
+        
+        select {
+            cursor: pointer;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            background-image: url('data:image/svg+xml;charset=US-ASCII,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 4 5"><path fill="%23667eea" d="M2 0L0 2h4zm0 5L0 3h4z"/></svg>');
+            background-repeat: no-repeat;
+            background-position: right 15px center;
+            background-size: 12px;
+        }
+
+        input:focus,
+        select:focus {
+            outline: none;
+            border-color: #667eea;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .input-group {
+            position: relative;
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #7f8c8d;
+            font-size: 1.1rem;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .input-with-icon {
+            padding-left: 50px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            margin-top: 15px;
+            padding: 12px;
+            font-size: 0.95rem;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+
+        .loading {
+            display: none;
+        }
+
+        .loading::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            margin: auto;
+            border: 2px solid transparent;
+            border-top-color: #ffffff;
+            border-radius: 50%;
+            animation: spin 1s ease infinite;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        @keyframes spin {
+            0% { transform: translateY(-50%) rotate(0deg); }
+            100% { transform: translateY(-50%) rotate(360deg); }
+        }
+
+        .status-message {
+            margin-top: 25px;
+            padding: 15px 20px;
+            border-radius: 12px;
+            font-weight: 500;
+            text-align: center;
+            display: none;
+        }
+
+        .status-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .status-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .status-info {
+            background: #cce7ff;
+            color: #004085;
+            border: 1px solid #b3d7ff;
+        }
+
+        .features {
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 1px solid #e9ecef;
+        }
+
+        .feature {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            color: #6c757d;
+            font-size: 0.95rem;
+        }
+
+        .feature-icon {
+            margin-right: 12px;
+            font-size: 1.2rem;
+            color: #667eea;
+        }
+
+        .price-display {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            padding: 15px;
+            margin-top: 15px;
+            text-align: center;
+            display: none;
+        }
+
+        .price-display.show {
+            display: block;
+        }
+
+        .price-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #27ae60;
+            margin-bottom: 5px;
+        }
+
+        .price-label {
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 480px) {
+            .container {
+                padding: 30px 20px;
+                margin: 10px;
+            }
+            
+            .logo {
+                font-size: 2rem;
+            }
+        }
+
+        /* Animation for form submission */
+        .form-submitted {
+            animation: submitPulse 0.6s ease;
+        }
+
+        @keyframes submitPulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+            100% { transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">💧 Dealdrip</div>
+            <p class="tagline">Get notified when prices drop on your favorite products</p>
+        </div>
+
+        <form id="trackingForm">
+            <div class="form-group">
+                <label for="productUrl">Product URL *</label>
+                <div class="input-group">
+                    <span class="input-icon">🔗</span>
+                    <input 
+                        type="text" 
+                        id="productUrl" 
+                        name="url" 
+                        class="input-with-icon"
+                        placeholder="https://www.amazon.com/product-page" 
+                        required
+                    >
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="targetPrice">Target Price (₹) *</label>
+                <div class="input-group">
+                    <span class="input-icon">💰</span>
+                    <input 
+                        type="number" 
+                        id="targetPrice" 
+                        name="target_price" 
+                        class="input-with-icon"
+                        placeholder="500.00"
+                        step="0.01" 
+                        min="0.01"
+                        required
+                    >
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="notificationType">Notification Method</label>
+                <select id="notificationType" name="notification_type" required>
+                    <option value="email">📧 Email Notification</option>
+                </select>
+                <small style="color: #7f8c8d; font-size: 0.9rem; margin-top: 5px; display: block;">You'll receive email alerts when the price drops below your target.</small>
+            </div>
+
+            <div class="form-group">
+                <label for="userEmail">Email Address *</label>
+                <div class="input-group">
+                    <span class="input-icon">📧</span>
+                    <input 
+                        type="email" 
+                        id="userEmail" 
+                        name="email" 
+                        class="input-with-icon"
+                        placeholder="you@example.com"
+                        required
+                    >
+                </div>
+                <small style="color: #7f8c8d; font-size: 0.9rem; margin-top: 5px; display: block;">We'll send price alerts to this email address only.</small>
+            </div>
+
+
+            <button type="submit" id="submitBtn" class="btn">
+                <span id="submitText">💧 Start Dripping</span>
+            </button>
+
+            <button type="button" id="testPriceBtn" class="btn btn-secondary">
+                🔍 Test Price Extraction
+            </button>
+
+            <div id="priceDisplay" class="price-display">
+                <div class="price-value" id="extractedPrice">₹0.00</div>
+                <div class="price-label">Current Price</div>
+            </div>
+        </form>
+
+        <div id="statusMessage" class="status-message"></div>
+
+        <div class="features">
+            <div class="feature">
+                <span class="feature-icon">⏰</span>
+                <span>Daily automatic price checks</span>
+            </div>
+            <div class="feature">
+                <span class="feature-icon">📧</span>
+                <span>Email notifications only</span>
+            </div>
+            <div class="feature">
+                <span class="feature-icon">🔔</span>
+                <span>Instant alerts when prices drop</span>
+            </div>
+            <div class="feature">
+                <span class="feature-icon">🛑</span>
+                <span>Free and secure tracking</span>
+            </div>
+            <div class="feature">
+                <span class="feature-icon">🌐</span>
+                <span>Works with major e-commerce sites</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // DOM elements
+        const form = document.getElementById('trackingForm');
+        const submitBtn = document.getElementById('submitBtn');
+        const submitText = document.getElementById('submitText');
+        const testPriceBtn = document.getElementById('testPriceBtn');
+        const statusMessage = document.getElementById('statusMessage');
+        const priceDisplay = document.getElementById('priceDisplay');
+        const extractedPrice = document.getElementById('extractedPrice');
+        const productUrlInput = document.getElementById('productUrl');
+        const notificationTypeSelect = document.getElementById('notificationType');
+        const userEmailInput = document.getElementById('userEmail');
+
+        // Utility functions
+        function showStatus(message, type) {
+            statusMessage.textContent = message;
+            statusMessage.className = `status-message status-${type}`;
+            statusMessage.style.display = 'block';
+            
+            // Auto-hide success messages after 5 seconds
+            if (type === 'success') {
+                setTimeout(() => {
+                    statusMessage.style.display = 'none';
+                }, 5000);
+            }
+        }
+
+        function hideStatus() {
+            statusMessage.style.display = 'none';
+        }
+
+        function setLoading(button, loading) {
+            if (loading) {
+                button.classList.add('loading');
+                button.disabled = true;
+            } else {
+                button.classList.remove('loading');
+                button.disabled = false;
+            }
+        }
+
+        // Email-only system - no complex field updates needed
+
+        function validateForm() {
+            const url = productUrlInput.value.trim();
+            const targetPrice = document.getElementById('targetPrice').value;
+            const email = userEmailInput.value.trim();
+
+            if (!url) {
+                showStatus('Please enter a product URL', 'error');
+                return false;
+            }
+
+            if (!url.match(/^https?:\/\/.+/)) {
+                showStatus('Please enter a valid URL starting with http:// or https://', 'error');
+                return false;
+            }
+
+            if (!targetPrice || parseFloat(targetPrice) <= 0) {
+                showStatus('Please enter a valid target price greater than ₹0', 'error');
+                return false;
+            }
+
+            // Validate email (required)
+            if (!email) {
+                showStatus('Please enter your email address', 'error');
+                return false;
+            }
+            
+            if (!email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
+                showStatus('Please enter a valid email address', 'error');
+                return false;
+            }
+
+            return true;
+        }
+
+        // Test price extraction
+        testPriceBtn.addEventListener('click', async () => {
+            const url = productUrlInput.value.trim();
+            
+            if (!url) {
+                showStatus('Please enter a product URL first', 'error');
+                return;
+            }
+
+            if (!url.match(/^https?:\/\/.+/)) {
+                showStatus('Please enter a valid URL starting with http:// or https://', 'error');
+                return;
+            }
+
+            hideStatus();
+            setLoading(testPriceBtn, true);
+            testPriceBtn.textContent = '🔍 Extracting Price...';
+
+            try {
+                const response = await fetch('/api/test-price', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ url: url })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    extractedPrice.textContent = `₹${data.price.toFixed(2)}`;
+                    priceDisplay.classList.add('show');
+                    showStatus(data.message, 'success');
+                } else {
+                    priceDisplay.classList.remove('show');
+                    showStatus(data.message, 'error');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                priceDisplay.classList.remove('show');
+                showStatus('Failed to test price extraction. Please check your internet connection.', 'error');
+            } finally {
+                setLoading(testPriceBtn, false);
+                testPriceBtn.textContent = '🔍 Test Price Extraction';
+            }
+        });
+
+        // Main form submission
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            if (!validateForm()) {
+                return;
+            }
+
+            hideStatus();
+            setLoading(submitBtn, true);
+            submitText.textContent = 'Starting Tracking...';
+            form.classList.add('form-submitted');
+
+            // Collect form data (email-only)
+            const formData = {
+                url: document.getElementById('productUrl').value.trim(),
+                target_price: parseFloat(document.getElementById('targetPrice').value),
+                notification_type: 'email',  // Always email
+                email: userEmailInput.value.trim()
+            };
+
+            try {
+                const response = await fetch('/api/track', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    showStatus(data.message, 'success');
+                    // Reset form after successful submission
+                    form.reset();
+                    priceDisplay.classList.remove('show');
+                } else {
+                    showStatus(data.message, 'error');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showStatus('Failed to submit tracking request. Please check your internet connection and try again.', 'error');
+            } finally {
+                setLoading(submitBtn, false);
+                submitText.textContent = '💧 Start Dripping';
+                form.classList.remove('form-submitted');
+            }
+        });
+
+        // Real-time URL validation
+        productUrlInput.addEventListener('input', () => {
+            priceDisplay.classList.remove('show');
+            hideStatus();
+        });
+
+        // Initialize form on page load
+        window.addEventListener('load', () => {
+            productUrlInput.focus();
+        });
+
+        // Show welcome message
+        setTimeout(() => {
+            showStatus('💡 Enter a product URL and try "Test Price Extraction" to verify price detection works!', 'info');
+        }, 2000);
+    </script>
+</body>
+</html>

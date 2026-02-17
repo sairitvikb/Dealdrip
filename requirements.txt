@@ -1,0 +1,23 @@
+# Render Deployment Requirements for DealDrip
+
+# Core Framework
+Flask==3.0.0
+gunicorn==21.2.0
+flask-cors==4.0.0
+
+# Database Support
+psycopg[binary]==3.2.3
+psycopg2-binary==2.9.10
+
+# Web Scraping & HTTP
+requests==2.31.0
+beautifulsoup4==4.12.2
+
+# Task Scheduling
+APScheduler==3.10.4
+
+# Environment & Configuration
+python-dotenv==1.0.0
+
+# For deployment platforms
+Werkzeug==3.0.1
