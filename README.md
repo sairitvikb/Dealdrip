@@ -6,7 +6,7 @@ A simple, reliable web application for tracking e-commerce product prices and se
 
 - **📧 Email-Only Notifications**: Clean, simple email alerts - no confusion!
 - **⏰ Automatic Price Monitoring**: Daily checks of your tracked products
-- **🌐 Multi-Site Support**: Works with Amazon, Flipkart, Myntra, and more
+- **🌐 Multi-Site Support**: Works with Amazon, Flipkart, Myntra, and many more
 - **📱 Responsive Design**: Works perfectly on desktop and mobile
 - **🔒 Privacy-First**: Each user gets only their own notifications
 - **⚡ Lightning Fast**: Simplified system = better performance
